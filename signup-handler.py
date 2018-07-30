@@ -6,8 +6,8 @@ app = Flask(__name__)
 @app.route('/',methods=['POST','GET'])
 def foo():
     print("RECIEVED")
-    # data = json.loads(request.data)
-    # print(data)
+    data = json.loads(request.data)
+    print(data)
     return "OK"
 
 if __name__ == '__main__':
