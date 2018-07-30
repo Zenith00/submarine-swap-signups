@@ -3,11 +3,12 @@ from psql_utils import database_exists
 from hashlib import md5
 import json
 import psycopg2
+from psycopg2 import extras
 import TOKENS
 import datetime
 conn = psycopg2.connect(dbname='postgres', user='postgres', password=TOKENS.psql_pwd)
 app = Flask(__name__)
-dict_cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+dict_cur = conn.cursor(cursor_factory=extras.DictCursor)
 cur = conn.cursor()
 if not database_exists(cursor=cur, name="signup"):
     cur.execute('CREATE TABLE signup('
