@@ -3,9 +3,8 @@ import psycopg2
 
 def database_exists(cursor, name):
     cursor.execute(f"SELECT COUNT(*) = 0 FROM pg_catalog.pg_database WHERE datname = '{name}'")
-    not_exists_row = cursor.fetchone()
-    not_exists = not_exists_row[0]
-    return not not_exists
+    row = cursor.fetchone()[0]
+    return True if row else False
 
 
 def table_exists(con, table_str):
@@ -13,7 +12,6 @@ def table_exists(con, table_str):
     cur.execute(f"select exists(select relname from pg_class where relname='{table_str}')")
     exists = cur.fetchone()[0]
     cur.close()
-
     return exists
 
 
@@ -24,5 +22,4 @@ def get_table_col_names(con, table_str):
     for desc in cur.description:
         col_names.append(desc[0])
     cur.close()
-
     return col_names

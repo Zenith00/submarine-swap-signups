@@ -11,6 +11,7 @@ app = Flask(__name__)
 dict_cur = conn.cursor(cursor_factory=extras.DictCursor)
 cur = conn.cursor()
 if not database_exists(cursor=cur, name="signup"):
+    print("creating table?")
     cur.execute('CREATE TABLE signup('
                 'position SERIAL UNIQUE NOT NULL, '
                 'score INT NOT NULL,'
@@ -24,17 +25,65 @@ if not database_exists(cursor=cur, name="signup"):
 @app.route('/', methods=['POST', 'GET'])
 def foo():
     print("RECIEVED")
-    data = json.loads(request.data)
+    data = request.get_data()
     print(data)
     return "OK"
 
 
-def genreate_referral(name, email, job):
-    return md5(name + email + job).hexdigest()
+def generate_referral(name, email, job):
+    return md5((name + email + job).encode('utf-8')).hexdigest()
+
+def already_signedup(email):
+    cur.execute(f"select exists(SELECT * FROM signup WHERE email='{email}')")
+    return cur.fetchone()[0]
+
 
 def insert_signup(name, email, job):
-    cur.execute(f"INSERT INTO signup(score, name, email, job, referral, created_on) VALUES (0, {name}, {email}, {job}, {genreate_referral(name, email, job)}, {datetime.datetime.utcnow()});")
+    referral = generate_referral(name, email, job)
+    cur.execute(f"INSERT INTO signup(score, name, email, job, referral, created_on) "
+                f"VALUES (0, '{name}', '{email}', '{job}', '{referral}', '{datetime.datetime.utcnow()}');")
+    conn.commit()
+    return referral
 
+def referred_from(referral):
+    print(referral)
+    cur.execute(f"SELECT * FROM signup WHERE referral='{referral}'")
+    v = cur.fetchall()
+    print(v)
+    print("\n\na\n")
+    cur.execute(f"UPDATE signup "
+                f"  SET score = score + 1 "
+                f"WHERE referral='{referral}' RETURNING score, position, email")
+    v = cur.fetchall()
+    conn.commit()
+    print(v)
+    print("endrefer")
+
+def get_position(email):
+    cur.execute(f"SELECT ss.rank FROM "
+                f"(SELECT score, position, email, rank() OVER (ORDER BY score-position DESC) AS rank FROM signup) AS ss "
+                f"WHERE email='{email}';")
+    return cur.fetchone()[0]
+
+def printall():
+    dict_cur.execute(f"SELECT *, score-position FROM signup ORDER BY score-position DESC")
+    v = dict_cur.fetchall()
+    for subv in v:
+        print(subv)
+    conn.commit()
+
+# a = insert_signup("testname","testemail","testjob")
+# input()
+
+# insert_signup("testnamesub","testemailsub","testjobsub")
+
+# print(a)
+
+# for i in range(20):
+#     insert_signup("name"+str(i), "email"+str(i), "job"+str(i))
+
+print(get_position("testemailsub"))
+printall()
 
 
 if __name__ == '__main__':
