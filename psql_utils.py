@@ -2,9 +2,7 @@ import psycopg2
 
 
 def database_exists(cursor, name):
-    cursor.execute(f"SELECT COUNT(*) = 0 FROM pg_catalog.pg_database WHERE datname = '{name}'")
-    print(cursor)
-    print(name)
+    cursor.execute(f"SELECT datname FROM pg_catalog.pg_database WHERE datname = '{name}'")
     row = cursor.fetchone()
     print(row)
     return True if row else False
