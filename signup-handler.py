@@ -12,10 +12,11 @@ app = Flask(__name__)
 cur = conn.cursor()
 
 if not database_exists(cursor=cur, name="signup"):
+    conn.autocommit = True
     cur.execute('CREATE DATABASE signup')
-    conn.commit()
-    conn.close()
 
+conn.commit()
+conn.close()
 conn = psycopg2.connect(dbname='signup', user='postgres', password=TOKENS.psql_pwd)
 cur = conn.cursor()
 if not table_exists(conn, "signup"):
