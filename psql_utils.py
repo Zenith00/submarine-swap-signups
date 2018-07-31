@@ -15,6 +15,7 @@ def table_exists(con, table_str):
     return exists
 
 
+
 def get_table_col_names(con, table_str):
     col_names = []
     cur = con.cursor()
