@@ -8,7 +8,6 @@ import TOKENS
 import datetime
 
 conn = psycopg2.connect(dbname='postgres', user='postgres', password=TOKENS.psql_pwd)
-conn.cl
 app = Flask(__name__)
 cur = conn.cursor()
 
