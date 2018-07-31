@@ -33,7 +33,7 @@ if not table_exists(conn, "signup"):
 @app.route('/', methods=['POST', 'GET'])
 def foo():
     print("RECIEVED")
-    data = list(request.forms.keys())[0]
+    data = request.form.keys()
     print(data)
     return "OK"
 
