@@ -8,11 +8,11 @@ import TOKENS
 import datetime
 
 conn = psycopg2.connect(dbname='postgres', user='postgres', password=TOKENS.psql_pwd)
+conn.autocommit = True
 app = Flask(__name__)
 cur = conn.cursor()
 
 if not database_exists(cursor=cur, name="signup"):
-    conn.autocommit = True
     cur.execute('CREATE DATABASE signup')
 
 conn.commit()
