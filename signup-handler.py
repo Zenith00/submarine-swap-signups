@@ -37,7 +37,7 @@ def foo():
     print(request.data)
     data = request.values.to_dict()
     if not already_signedup(data["email"]):
-        insert_signup(data["name", data["email"], data["workplace"]])
+        insert_signup(data["name"], data["email"], data["workplace"]])
 
     print(data)
     return "OK"
