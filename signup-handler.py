@@ -36,6 +36,7 @@ def foo():
     print("RECIEVED")
     print(request.data)
     data = request.values.to_dict()
+
     print(data)
 
     if not already_signedup(data["email"]):
