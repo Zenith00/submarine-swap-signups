@@ -43,6 +43,7 @@ def foo():
 
 @app.route("/signup", methods=['GET'])
 def getsignups():
+    print("SIGNUP RECIEVED")
     cur.execute('SELECT COUNT(*) FROM signup;')
     v = cur.fetchall()
     return v
