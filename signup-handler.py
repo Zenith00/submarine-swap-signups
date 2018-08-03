@@ -31,18 +31,13 @@ if not table_exists(conn, "signup"):
                 'created_on TIMESTAMP NOT NULL)')
 
 
-@app.route('/', methods=['POST', 'GET'])
-def foo():
-    print("RECIEVED")
-    print(request.data)
-    data = request.values.to_dict()
 
-    print(data)
+def already_signedup(email):
+    cur.execute(f"select exists(SELECT * FROM signup WHERE email='{email}')")
+    return cur.fetchone()[0]
 
-    if not already_signedup(data["email"]):
-        insert_signup(data["name"], data["email"], data["workplace"]])
 
-    return "OK"
+
 
 @app.route("/signup", methods=['GET'])
 def getsignups():
@@ -54,14 +49,22 @@ def getsignups():
     print(resp)
     return resp
 
+@app.route('/', methods=['POST', 'GET'])
+def foo():
+    print("RECIEVED")
+    print(request.data)
+    data = request.values.to_dict()
+
+    print(data)
+
+    if not already_signedup(data["email"]):
+        insert_signup(data["name"], data["email"], data["workplace"])
+
+        return "OK"
+
 
 def generate_referral(name, email, job):
     return md5((name + email + job).encode('utf-8')).hexdigest()
-
-
-def already_signedup(email):
-    cur.execute(f"select exists(SELECT * FROM signup WHERE email='{email}')")
-    return cur.fetchone()[0]
 
 
 def insert_signup(name, email, job):
@@ -100,6 +103,9 @@ def printall():
     for subv in v:
         print(subv)
     conn.commit()
+
+
+
 
 
 # a = insert_signup("testname","testemail","testjob")
