@@ -1,3 +1,4 @@
+import flask
 from flask import Flask, request
 from psql_utils import database_exists, table_exists
 from hashlib import md5
@@ -46,7 +47,9 @@ def getsignups():
     print("SIGNUP RECIEVED")
     cur.execute('SELECT COUNT(*) FROM signup;')
     v = cur.fetchall()
-    return v
+    resp = flask.Response(v)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 def generate_referral(name, email, job):
