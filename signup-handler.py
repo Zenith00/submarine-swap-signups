@@ -35,9 +35,17 @@ def foo():
     print("RECIEVED")
     print(request.data)
     data = request.values.to_dict()
+    if not already_signedup(data["email"]):
+        insert_signup(data["name", data["email"], data["job"]])
 
     print(data)
     return "OK"
+
+@app.route("/signup", methods=['GET'])
+def getsignups():
+    cur.execute('SELECT COUNT(*) FROM signup;')
+    v = cur.fetchall()
+    return v
 
 
 def generate_referral(name, email, job):
