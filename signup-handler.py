@@ -47,7 +47,7 @@ def getsignups():
     print("SIGNUP RECIEVED")
     cur.execute('SELECT COUNT(*) FROM signup;')
     v = cur.fetchall()
-    resp = flask.Response(v)
+    resp = flask.Response(str(v))
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
