@@ -49,6 +49,7 @@ def getsignups():
     v = cur.fetchall()
     resp = flask.Response(str(v))
     resp.headers['Access-Control-Allow-Origin'] = '*'
+    print(resp)
     return resp
 
 
