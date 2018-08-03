@@ -105,6 +105,14 @@ def printall():
     conn.commit()
 
 
+for i in range(30):
+    insert_signup(name="test" + str(i), email="test" + str(i) + "@test.test", job="test" + str(i))
+    def insert_signup(name, email, job):
+        referral = generate_referral(name, email, job)
+        cur.execute(f"INSERT INTO signup(score, name, email, job, referral, created_on) "
+                    f"VALUES (0, '{name}', '{email}', '{job}', '{referral}', '{datetime.datetime.utcnow()}');")
+        conn.commit()
+        return referral
 
 
 
