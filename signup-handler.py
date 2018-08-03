@@ -47,7 +47,7 @@ def getsignups():
     print("SIGNUP RECIEVED")
     cur.execute('SELECT COUNT(*) FROM signup;')
     v = cur.fetchall()
-    resp = flask.Response(str(v[0][0]) + " people ahead of you")
+    resp = flask.Response(f'<div class=\"contents\"><p style=\"text-align: center; line-height: 21px; font-size: 15px;\"><b>{v[0][0]} people ahead of you</b></p></div>')
     resp.headers['Access-Control-Allow-Origin'] = '*'
     print(resp)
     return resp
