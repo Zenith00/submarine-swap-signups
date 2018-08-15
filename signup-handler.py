@@ -64,7 +64,7 @@ def foo():
     else:
         return "Already Signed Up"
 
-x
+
 def generate_referral(name, email, job):
     return md5((name + email + job).encode('utf-8')).hexdigest()
 
@@ -101,7 +101,7 @@ def get_position(email):
 
 
 def printall():
-    cur.execute(f"SELECT *, score-position FROM signup ORDER BY score-position DESC")paymen
+    cur.execute(f"SELECT *, score-position FROM signup ORDER BY score-position DESC")
     v = cur.fetchall()
     for subv in v:
         print(subv)
