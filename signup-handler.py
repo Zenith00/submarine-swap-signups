@@ -31,12 +31,9 @@ if not table_exists(conn, "signup"):
                 'created_on TIMESTAMP NOT NULL)')
 
 
-
 def already_signedup(email):
     cur.execute(f"select exists(SELECT * FROM signup WHERE email='{email}')")
     return cur.fetchone()[0]
-
-
 
 
 @app.route("/signup", methods=['GET'])
@@ -44,25 +41,30 @@ def getsignups():
     print("SIGNUP RECIEVED")
     cur.execute('SELECT COUNT(*) FROM signup;')
     v = cur.fetchall()
-    resp = flask.Response(f'<div class=\"contents\"><p style=\"text-align: center; line-height: 21px; font-size: 15px;\"><b>{v[0][0]} people ahead of you</b></p></div>')
+    resp = flask.Response(
+        f'<div class=\"contents\"><p style=\"text-align: center; line-height: 21px; font-size: 15px;\"><b>{v[0][0]} people ahead of you</b></p></div>')
     resp.headers['Access-Control-Allow-Origin'] = '*'
     print(resp)
     return resp
+
 
 @app.route('/', methods=['POST', 'GET'])
 def foo():
     print("RECIEVED")
     print(request.data)
     data = request.values.to_dict()
-
     print(data)
-
+    referral_source = data["referralsource"]
+    if "?referral=" in referral_source:
+        referral = referral_source.split("?referral=")[1]
+        referred_from(referral)
     if not already_signedup(data["email"]):
         insert_signup(data["name"], data["email"], data["workplace"])
-
         return "OK"
+    else:
+        return "Already Signed Up"
 
-
+x
 def generate_referral(name, email, job):
     return md5((name + email + job).encode('utf-8')).hexdigest()
 
@@ -72,6 +74,7 @@ def insert_signup(name, email, job):
     cur.execute(f"INSERT INTO signup(score, name, email, job, referral, created_on) "
                 f"VALUES (0, '{name}', '{email}', '{job}', '{referral}', '{datetime.datetime.utcnow()}');")
     conn.commit()
+    print(referral)
     return referral
 
 
@@ -98,7 +101,7 @@ def get_position(email):
 
 
 def printall():
-    cur.execute(f"SELECT *, score-position FROM signup ORDER BY score-position DESC")
+    cur.execute(f"SELECT *, score-position FROM signup ORDER BY score-position DESC")paymen
     v = cur.fetchall()
     for subv in v:
         print(subv)
@@ -108,19 +111,20 @@ def printall():
 
 
 
-# a = insert_signup("testname","testemail","testjob")
-# input()
-
-# insert_signup("testnamesub","testemailsub","testjobsub")
-
-# print(a)
-
-# for i in range(20):
-#     insert_signup("name"+str(i), "email"+str(i), "job"+str(i))
-
-# print(get_position("testemailsub"))
-# printall()
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port="9001")
+    # a = insert_signup("testname","testemail","testjob")
+    # input()
+
+    # insert_signup("testnamesub","testemailsub","testjobsub")
+
+    # print(a)
+
+    # for i in range(20):
+    #     insert_signup("name"+str(i), "email"+str(i), "job"+str(i))
+
+    # print(get_position("testemailsub"))
+    # printall()
+
+    if __name__ == '__main__':
+        app.run(host='0.0.0.0', port="9001")
